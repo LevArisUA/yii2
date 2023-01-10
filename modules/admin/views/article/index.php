@@ -21,8 +21,6 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create Article', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -40,10 +38,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::img($data->getImage(), ['width' => 200]);
                 }
             ],
-            //'tag',
-            //'viewed',
-            //'topic_id',
-            //'user_id',
             [
                 'class' => ActionColumn::class,
                 'urlCreator' => function ($action, Article $model, $key, $index, $column) {

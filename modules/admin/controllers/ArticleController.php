@@ -2,7 +2,6 @@
 
 namespace app\modules\admin\controllers;
 
-use Yii;
 use app\models\Article;
 use app\models\ArticleSearch;
 use app\models\ImageUpload;
@@ -10,6 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
+use Yii;
 
 /**
  * ArticleController implements the CRUD actions for Article model.
@@ -25,7 +25,7 @@ class ArticleController extends Controller
             parent::behaviors(),
             [
                 'verbs' => [
-                    'class' => VerbFilter::class,
+                    'class' => VerbFilter::className(),
                     'actions' => [
                         'delete' => ['POST'],
                     ],
@@ -49,16 +49,7 @@ class ArticleController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
-    public function actionSetImage($id)
-    {
-        $model = new ImageUpload;
-        if (Yii::$app->request->isPost){
-            $article = $this->findModel($id);
-            $file = UploadedFile::getInstance($model, 'image');
-            if ($article->saveImage($model->uploadFile($file, $article->image))) return $this->redirect(['view', 'id'=>$article->id]);
-        }
-        return $this->render('image', ['model'=>$model]);
-    }
+
     /**
      * Displays a single Article model.
      * @param int $id ID
@@ -82,7 +73,7 @@ class ArticleController extends Controller
         $model = new Article();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->saveArticle()) {
+            if ($model->load($this->request->post()) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         } else {
@@ -105,7 +96,7 @@ class ArticleController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->saveArticle()) {
+        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -124,6 +115,7 @@ class ArticleController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
+
         return $this->redirect(['index']);
     }
 
@@ -141,5 +133,15 @@ class ArticleController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+    public function actionSetImage($id)
+    {
+        $model = new ImageUpload;
+        if (Yii::$app->request->isPost){
+            $article = $this->findModel($id);
+            $file = UploadedFile::getInstance($model, 'image');
+            if ($article->saveImage($model->uploadFile($file, $article->image))) return $this->redirect(['view', 'id'=>$article->id]);
+        }
+        return $this->render('image', ['model'=>$model]);
     }
 }

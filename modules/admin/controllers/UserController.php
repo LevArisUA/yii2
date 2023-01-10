@@ -25,7 +25,7 @@ class UserController extends Controller
             parent::behaviors(),
             [
                 'verbs' => [
-                    'class' => VerbFilter::class,
+                    'class' => VerbFilter::className(),
                     'actions' => [
                         'delete' => ['POST'],
                     ],
@@ -135,13 +135,14 @@ class UserController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    public function actionSetImage ($id) {
+    public function actionSetImage ($id)
+    {
         $modelUser = new ImageUpload;
         if (Yii::$app->request->isPost)
         {
             $user = $this->findModel($id);
             $file = UploadedFile::getInstance($modelUser,'image');
-            if($user->saveImage($modelUser->uploadFile($file, $user->image)))
+            if($user->saveImage( $modelUser->uploadFile($file, $user->image)))
             {
                 return $this->redirect(['view', 'id'=>$user->id]);
             }

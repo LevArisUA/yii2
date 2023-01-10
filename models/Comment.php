@@ -52,8 +52,4 @@ class Comment extends \yii\db\ActiveRecord
             'delete' => 'Delete',
         ];
     }
-    public function getDate()
-    {
-        return Yii::$app->formatter->asDate($this->date);
-    }
 }

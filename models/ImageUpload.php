@@ -1,9 +1,10 @@
 <?php
+
 namespace app\models;
+
 use Yii;
-use yii\base\Model;
 use yii\web\UploadedFile;
-use function PHPUnit\Framework\fileExists;
+use yii\base\Model;
 
 class ImageUpload extends Model
 {
@@ -13,11 +14,16 @@ class ImageUpload extends Model
         $this->image = $file;
         if ($this->validate()) {
             $this->deleteCurrentImage($currentImage);
-            $filename = strtolower(md5(uniqid($file->baseName)) . '.' . $file->extension);
-            $file->saveAs(Yii::getAlias('@web') . 'uploads/' . $filename);
+            if (file_exists(Yii::getAlias('@web').'uploads/'.$currentImage) &&
+            is_file(Yii::getAlias('@web').'uploads/'.$currentImage)) {
+                unlink(Yii::getAlias('@web').'uploads/'.$currentImage);
+            }
+            $filename = strtolower(md5(uniqid($file->baseName)).'.'.$file->extension);
+            $file->saveAs(Yii::getAlias('@web').'uploads/'.$filename);
             return $filename;
         }
     }
+
     public function rules(){
         return[
             [['image'], 'required'],

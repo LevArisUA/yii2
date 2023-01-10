@@ -9,11 +9,6 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
-use app\models\Article;
-use yii\data\Pagination;
-use app\models\Topic;
-use app\models\Comment;
-use app\models\CommentForm;
 
 class SiteController extends Controller
 {
@@ -66,25 +61,42 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $query = Article::find();
-        $count = $query->count();
-        $pagination = new Pagination(['totalCount' => $count, 'pageSize'=> 1]);
-        $articles = $query->offset($pagination->offset)
-            ->limit($pagination->limit)
-            ->all();
-        $popular = Article::find()->orderBy('viewed desc')->limit(3)->all();
-        $recent = Article::find()->orderBy('date desc')->limit(3)->all();
-        $topics = Topic::find()->all();
-        return $this->render('index',[
-            'articles'=>$articles,
-            'pagination'=>$pagination,
-            'popular' => $popular,
-            'recent' => $recent,
-            'topics' => $topics,
+        return $this->render('index');
+    }
+
+    /**
+     * Login action.
+     *
+     * @return Response|string
+     */
+    public function actionLogin()
+    {
+        if (!Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
+        $model = new LoginForm();
+        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            return $this->goBack();
+        }
+
+        $model->password = '';
+        return $this->render('login', [
+            'model' => $model,
         ]);
     }
 
+    /**
+     * Logout action.
+     *
+     * @return Response
+     */
+    public function actionLogout()
+    {
+        Yii::$app->user->logout();
 
+        return $this->goHome();
+    }
 
     /**
      * Displays contact page.
@@ -96,6 +108,7 @@ class SiteController extends Controller
         $model = new ContactForm();
         if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
             Yii::$app->session->setFlash('contactFormSubmitted');
+
             return $this->refresh();
         }
         return $this->render('contact', [
@@ -111,71 +124,5 @@ class SiteController extends Controller
     public function actionAbout()
     {
         return $this->render('about');
-    }
-    public function actionView($id)
-    {
-        $article = Article::findOne($id);
-        $popular = Article::find()->orderBy('viewed desc')->limit(3)->all();
-        $recent = Article::find()->orderBy('date desc')->limit(3)->all();
-        $topics = Topic::find()->all();
-  /*      $comments = $article->comments;
-        $commentsParent = array_filter($comments, function ($k) {
-            return $k['comment_id'] == null;
-        });
-        $commentsChild = array_filter($comments, function ($k) {
-            return ($k['comment_id'] != null && !$k['delete']);
-        });
-        $commentForm = new CommentForm(); */
-        return $this->render('single', [
-            'article' => $article,
-            'popular' => $popular,
-            'recent' => $recent,
-            'topics' => $topics,
- /*           'commentsParent' => $commentsParent,
-            'commentsChild' => $commentsChild,
-            'commentForm' => $commentForm, */
-        ]);
-    }
-
-    public function actionTopic($id)
-    {
-        $query = Article::find()->where(['topic_id'=>$id]);
-        $count = $query->count();
-        $pagination = new Pagination(['totalCount' => $count, 'pageSize' => 1]);
-        $articles = $query->offset($pagination->offset)
-            ->limit($pagination->limit)
-            ->all();
-        $popular = Article::find()->orderBy('viewed desc')->limit(3)->all();
-        $recent = Article::find()->orderBy('date desc')->limit(3)->all();
-        $topics = Topic::find()->all();
-        return $this->render('topic', [
-            'articles' => $articles,
-            'pagination' => $pagination,
-            'popular' => $popular,
-            'recent' => $recent,
-            'topics' => $topics,
-        ]);
-    }
-    public function actionComment($id, $id_comment = null)
-    {
-        $model = new CommentForm();
-        if (Yii::$app->request->isPost) {
-            $model->load(Yii::$app->request->post());
-            if ($model->saveComment($id, $id_comment)) {
-                return $this->redirect(['site/view', 'id' => $id]);
-            }
-        }
-    }
-
-    public function actionCommentDelete($id, $id_comment)
-    {
-        if (Yii::$app->request->isPost) {
-            $data = Comment::findOne($id_comment);
-            if ($data->user_id == Yii::$app->user->id) {
-                $data->delete = true;
-                $data->save(false);
-            }
-            return $this->redirect(['site/view', 'id' => $id]);
-        }
     }
 }
