@@ -1,7 +1,12 @@
 <?php
+
 use yii\helpers\Url;
 use app\models\Topic;
 use app\models\User;
+use app\assets\AppAsset;
+
+$this->title = Yii::$app->name;
+
 ?>
 <div class="col-md-8">
     <?php foreach ($articles as $article): ?>

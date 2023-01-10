@@ -1,5 +1,9 @@
-main > .container {
-    padding: 70px 15px 20px;
+.bg-dark {
+    box-shadow: rgba(50, 50, 50, 0.1) 0px 3px;
+}
+
+.main-content > .container {
+    padding: 50px 15px 20px;
 }
 
 .footer {
