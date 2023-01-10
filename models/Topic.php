@@ -41,4 +41,9 @@ class Topic extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getArticles($id){
+        $articles = Article::find()->where(['topic_id'=>$id])->all();
+        return count($articles);
+    }
+
 }

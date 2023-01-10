@@ -18,13 +18,13 @@ use app\models\User;
                 <div class="entry-content">
                     <p> <?= mb_strimwidth($article->description,0, 360, "..."); ?> </p>
                     <div class="btn-continue-reading text-center text-uppercase">
-                        <a href="<?= Url::toRoute(['/view', 'id'=>$article->id]) ?>" class="more-link">Continue Reading</a>
+                        <a href="<?= Url::toRoute(['/view', 'id'=>$article->id]) ?>" class="more-link">До публікації --></a>
                     </div>
                 </div>
                 <div class="social-share">
-                    <span class="social-share-title pull-left text-capitalize"> By
-                        <?php echo User::find()->where(['id' => $article->user_id])->one()->name; ?> On <?= $article->getDate();?>
-                    </span>
+                    <span class="social-share-title pull-left text-capitalize"> Користувач:
+                        <?php echo User::find()->where(['id' => $article->user_id])->one()->name; ?>
+                        <br>Додано: <?= $article->getDate();?> </span>
                     <ul class="text-center pull-right">
                         <li><a class="s-facebook" href="#"><i class="fa fa-eye"></i></a></li>
                         <?= (int)$article->viewed; ?>
@@ -39,5 +39,5 @@ use app\models\User;
     ?>
 </div>
 <?php
-    echo \Yii::$app->view->renderFile('@app/views/site/right.php');
+    echo \Yii::$app->view->renderFile('@app/views/site/right.php', compact('popular','recent','topics'));
 ?>
