@@ -40,4 +40,5 @@ class Topic extends \yii\db\ActiveRecord
             'name' => 'Name',
         ];
     }
+
 }
