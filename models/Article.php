@@ -88,4 +88,7 @@ class Article extends \yii\db\ActiveRecord
         $this->user_id = Yii::$app->user->id;
         return $this->save();
     }
+    public function getTopic() {
+        return Topic::find()->where(['id' => $this->topic_id])->one();
+    }
 }

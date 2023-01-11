@@ -19,7 +19,8 @@
                         <div class="post-content">
                             <header class="entry-header text-uppercase">
                                 <h6><a href="<?= Url::toRoute(['/topic', 'id'=>$article->topic_id]) ?>">
-                                <?php echo Topic::find()->where(['id' => $article->topic_id])->one()->name; ?></a></h6>
+                                    <?= $article->getTopic()->name; ?>
+                                </a></h6>
                                 <h1 class="entry-title"><a href="<?= Url::toRoute(['/view', 'id'=>$article->id]) ?>">
                                         <?= $article->title; ?></a></h1>
                             </header>

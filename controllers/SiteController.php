@@ -152,6 +152,7 @@ class SiteController extends Controller
     public function actionView($id)
     {
         $article = Article::findOne($id);
+        $topic = Topic::find()->where(['id' => $article->topic_id])->one();
         $popular = Article::find()->orderBy('viewed desc')->limit(3)->all();
         $recent = Article::find()->orderBy('date desc')->limit(3)->all();
         $topics = Topic::find()->all();
@@ -167,6 +168,7 @@ class SiteController extends Controller
 
         return $this->render('single', [
             'article' => $article,
+            'topic' => $topic,
             'popular' => $popular,
             'recent' => $recent,
             'topics' => $topics,
